@@ -6,20 +6,46 @@ import android.widget.VideoView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.ui.StyledPlayerView;
+
 public class VideoActivity extends AppCompatActivity {
 
-    VideoView videoView;
+    StyledPlayerView playerView;
+    ExoPlayer exoPlayer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_video);
 
-        videoView = findViewById(R.id.videoView);
+        playerView = findViewById(R.id.exo);
         String path = getIntent().getStringExtra("path");
-        videoView.setVideoPath(path);
-        videoView.setMediaController(new MediaController(VideoActivity.this));
-        videoView.requestFocus();
-        videoView.start();
+        exoPlayer = new ExoPlayer.Builder(this).build();
+        playerView.setPlayer(exoPlayer);
+
+        MediaItem mediaItem = MediaItem.fromUri(path);
+        exoPlayer.setMediaItem(mediaItem);
+        exoPlayer.prepare();
+        exoPlayer.play();
+    }
+
+    @Override
+    protected void onPause() {
+        exoPlayer.pause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        exoPlayer.pause();
+        super.onStop();
+    }
+
+    @Override
+    protected void onResume() {
+        exoPlayer.play();
+        super.onResume();
     }
 }

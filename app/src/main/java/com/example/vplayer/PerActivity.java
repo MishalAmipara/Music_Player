@@ -16,7 +16,6 @@ import android.widget.Toast;
 public class PerActivity extends AppCompatActivity {
 
     Button allowBtn;
-    String[] per = {"android.permission.READ_EXTERNAL_STORAGE"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,14 +27,22 @@ public class PerActivity extends AppCompatActivity {
                 startActivity(new Intent(PerActivity.this, MainActivity.class));
                 finish();
             }
+            if (checkSelfPermission(Manifest.permission.READ_MEDIA_VIDEO) == PackageManager.PERMISSION_GRANTED){
+                startActivity(new Intent(PerActivity.this, MainActivity.class));
+                finish();
+            }
         }
 
         allowBtn = findViewById(R.id.allowBtn);
         allowBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(per, 404);
+                if (Build.VERSION.SDK_INT > 32){
+                    requestPermissions(new String[]{"android.permission.READ_MEDIA_VIDEO"}, 404);
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        requestPermissions(new String[]{"android.permission.READ_EXTERNAL_STORAGE"}, 404);
+                    }
                 }
             }
         });
